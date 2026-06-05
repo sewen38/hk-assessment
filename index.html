@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>香港移民项目资格评估</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:#f5f6f8;color:#1a1a1a;line-height:1.6;-webkit-text-size-adjust:100%}
+.container{max-width:720px;margin:0 auto;padding:0 0 40px}
+.header{background:linear-gradient(135deg,#1a3350,#2969a8);color:#fff;padding:32px 20px 28px;text-align:center;position:sticky;top:0;z-index:10}
+.header h1{font-size:22px;margin-bottom:4px;letter-spacing:.5px}
+.header p{opacity:.85;font-size:13px}
+.card{background:#fff;border-radius:14px;padding:24px 18px;margin:16px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h2{font-size:17px;color:#1a3350;margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid #eef1f5;display:flex;align-items:center;gap:8px}
+.card h2 .num{background:#1a3350;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-weight:600;font-size:14px;margin-bottom:5px;color:#333}
+.fg .hint{font-size:12px;color:#999;margin-bottom:4px;font-weight:400}
+.fg select,.fg input[type=text]{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;transition:border .2s;background:#fafafa;-webkit-appearance:none}
+.fg select:focus,.fg input:focus{outline:none;border-color:#2969a8;background:#fff}
+.detail-input{margin-top:8px;display:none}
+.detail-input.show{display:block}
+.detail-input input{width:100%;padding:10px 12px;border:1.5px solid #b8d8f0;border-radius:8px;font-size:14px;background:#e8f4fd}
+.detail-input input::placeholder{color:#888}
+.detail-input .label-sm{font-size:12px;color:#666;margin-bottom:4px;display:block}
+.rg{display:flex;flex-wrap:wrap;gap:8px}
+.rg label.ri{display:flex;align-items:center;gap:6px;padding:9px 14px;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-weight:400;font-size:13px;transition:all .15s;background:#fafafa;flex:1 1 auto;min-width:calc(50% - 8px);justify-content:center}
+.rg label.ri:active{border-color:#2969a8;background:#e8f4fd}
+.rg label.ri.sel{border-color:#2969a8;background:#e8f4fd;font-weight:600;color:#1a3350}
+.rg input[type=radio]{display:none}
+.rg-check{display:flex;flex-wrap:wrap;gap:8px}
+.rg-check label.ri{display:flex;align-items:center;gap:6px;padding:9px 14px;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;background:#fafafa;flex:1 1 auto;min-width:calc(50% - 8px);justify-content:center}
+.rg-check label.ri.sel{border-color:#2969a8;background:#e8f4fd;font-weight:600;color:#1a3350}
+.rg-check input[type=checkbox]{display:none}
+.btn{display:block;width:calc(100% - 24px);margin:20px auto;padding:14px;background:linear-gradient(135deg,#1a3350,#2969a8);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .1s,box-shadow .2s;letter-spacing:.5px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Results */
+.results-wrap{display:none;margin:0 12px}
+.results-wrap.show{display:block}
+.rs-card{background:#fff;border-radius:14px;padding:20px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.rs-summary{border-left:4px solid #22c55e}
+.rs-summary h3{font-size:18px;margin-bottom:10px;color:#1a3350}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px}
+.tag-green{background:#dcfce7;color:#166534}
+.tag-yellow{background:#fef3c7;color:#92400e}
+.tag-red{background:#fee2e2;color:#991b1b}
+.prog{background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:10px;border-left:4px solid #2969a8}
+.prog.el{border-left-color:#22c55e}
+.prog.mb{border-left-color:#f59e0b}
+.prog.no{opacity:.8;border-left-color:#e0e0e0}
+.prog h4{font-size:15px;margin-bottom:6px;color:#1a3350}
+.prog .st{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:6px}
+.st-q{background:#dcfce7;color:#166534}
+.st-m{background:#fef3c7;color:#92400e}
+.st-n{background:#fee2e2;color:#991b1b}
+.prog .d{font-size:13px;color:#555;line-height:1.7}
+.txt-green{color:#166534;font-weight:600}
+.txt-orange{color:#c2410c;font-weight:600}
+table.cm{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+table.cm th,table.cm td{border:1px solid #e2e8f0;padding:7px 8px;text-align:center}
+table.cm th{background:#f1f5f9;font-weight:600;font-size:11px}
+table.cm td:first-child{text-align:left;font-weight:500}
+.hlb{background:#e8f4fd;border:1px solid #b8d8f0;border-radius:8px;padding:12px;margin:10px 0;font-size:13px}
+.hlb.warn{background:#fff7ed;border-color:#fed7aa}
+.btn-sm{display:inline-block;padding:10px 20px;margin:4px;background:#eef1f5;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer}
+@media(max-width:400px){.rg label.ri{min-width:100%;font-size:12px;padding:8px 10px}.card{padding:18px 14px;margin:10px 8px}.header h1{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>🇭🇰 香港移民项目资格评估</h1><p>基于入境处2025-2026政策 · 填写约3分钟</p></div>
+
+<form id="qform" onsubmit="return false">
+
+<!-- 1 -->
+<div class="card"><h2><span class="num">1</span> 基本信息</h2>
+<div class="fg"><label>年龄</label><div class="rg" id="age-g"></div></div>
+<div class="fg"><label>国籍/户籍</label><select id="nationality"><option value="">请选择</option><option value="cn">中国内地居民</option><option value="cn-foreign">中国籍+已取得外国永居</option><option value="mo-tw">澳门/台湾居民</option><option value="foreign">外国国民</option></select></div>
+<div class="fg"><label>有无犯罪记录</label><div class="rg" id="nocrim-g"></div></div>
+</div>
+
+<!-- 2 -->
+<div class="card"><h2><span class="num">2</span> 学历背景</h2>
+<div class="fg"><label>最高学历</label><select id="education"><option value="">请选择</option><option value="doctor">博士</option><option value="master">硕士</option><option value="bachelor">学士（本科）</option><option value="associate">大专/副学士</option><option value="highschool">高中及以下</option></select></div>
+<div class="fg"><label>毕业院校是否属于世界百强大学？<span class="hint">(QS/泰晤士/上交/US News前100，或高才通198所合资格大学)</span></label><div class="rg" id="topuni-g"></div>
+<div id="topuni-detail" class="detail-input"><span class="label-sm">请填写毕业院校全称：</span><input type="text" id="topuni-name" placeholder="例如：北京大学 / MIT"></div></div>
+<div class="fg" id="stem-g" style="display:none"><label>硕/博士学位是否属于STEM学科？<span class="hint">(科学、科技、工程、数学)</span></label><div class="rg" id="stem-g2"></div></div>
+<div class="fg"><label>是否在香港取得全日制学士学位或更高学历？<span class="hint">(含港校大湾区校园)</span></label><div class="rg" id="hkdegree-g"></div>
+<div id="hkdegree-detail" class="detail-input"><span class="label-sm">请填写香港院校全称：</span><input type="text" id="hkdegree-name" placeholder="例如：香港大学 / 香港中文大学"></div></div>
+
+<!-- 3 -->
+<div class="card"><h2><span class="num">3</span> 工作与收入</h2>
+<div class="fg"><label>总工作经验年限</label><select id="workyears"><option value="">请选择</option><option value="0-2">0-2年</option><option value="3-5">3-5年</option><option value="5-9">5-9年</option><option value="10+">10年及以上</option></select></div>
+<div class="fg"><label>是否拥有≥3年学位程度或专家水平的工作经验？</label><div class="rg" id="exp3y-g"></div>
+<div id="exp3y-detail" class="detail-input"><span class="label-sm">请简述相关工作经验（公司/职位/年限）：</span><input type="text" id="exp3y-info" placeholder="例如：阿里巴巴 高级工程师 5年"></div></div>
+<div class="fg"><label>是否有≥3年在跨国公司或知名企业的工作经验？<span class="hint">(上市公司、财富500强、福布斯2000强、胡润中国500强)</span></label><div class="rg" id="mnc-g"></div>
+<div id="mnc-detail" class="detail-input"><span class="label-sm">请填写公司名称及职位：</span><input type="text" id="mnc-info" placeholder="例如：腾讯 产品总监 4年"></div></div>
+<div class="fg"><label>是否有≥3年在特定领域的工作经验？<span class="hint">(创新及科技、金融、国际贸易及跨境供应链管理)</span></label><div class="rg" id="sector-g"></div>
+<div id="sector-detail" class="detail-input"><span class="label-sm">请说明具体领域及年限：</span><input type="text" id="sector-info" placeholder="例如：金融科技 风控 5年"></div></div>
+<div class="fg"><label>上一年度全年收入<span class="hint">(含薪资、奖金、分红、公司利润，港元)</span></label><select id="income"><option value="">请选择</option><option value="lt1m">低于100万港元</option><option value="1m-2.5m">100万-250万港元</option><option value="gte2.5m">250万港元及以上</option></select></div>
+</div>
+
+<!-- 4 -->
+<div class="card"><h2><span class="num">4</span> 语言能力</h2>
+<div class="fg"><label>中文能力<span class="hint">(普通话或粤语)</span></label><select id="chinese"><option value="">请选择</option><option value="native">母语/精通(听说读写)</option><option value="good">良好(日常沟通+书面)</option><option value="basic">基础</option><option value="none">不会</option></select></div>
+<div class="fg"><label>英文能力</label><select id="english"><option value="">请选择</option><option value="native">精通(雅思≥7.0/托福≥94/六级≥520)</option><option value="good">良好(雅思≥6.0/托福≥80/六级≥430)</option><option value="basic">基础</option><option value="none">不会</option></select></div>
+<div class="fg"><label>是否还流利掌握其他外语？</label><div class="rg" id="otherlang-g"></div>
+<div id="otherlang-detail" class="detail-input"><span class="label-sm">请填写掌握的外语语种及水平：</span><input type="text" id="otherlang-info" placeholder="例如：日语N1 / 法语B2"></div></div>
+</div>
+
+<!-- 5 -->
+<div class="card"><h2><span class="num">5</span> 资产与业务</h2>
+<div class="fg"><label>个人净资产<span class="hint">(合并计算，港元)</span></label><select id="networth"><option value="">请选择</option><option value="lt10m">低于1,000万港元</option><option value="10m-30m">1,000万-3,000万港元</option><option value="gte30m">3,000万港元及以上</option></select></div>
+<div class="fg"><label>是否拥有业务实体？<span class="hint">(非上市公司持股≥50% 或 上市公司持股≥10%)</span></label><div class="rg" id="bizowner-g"></div>
+<div id="bizprofit-g" style="display:none"><label>该业务上一年度全年盈利</label><select id="bizprofit"><option value="">请选择</option><option value="lt5m">低于500万港元</option><option value="gte5m">500万港元及以上</option></select></div></div>
+</div>
+
+<!-- 6 -->
+<div class="card"><h2><span class="num">6</span> 香港雇主情况</h2>
+<div class="fg"><label>是否已获得香港雇主聘用？</label><div class="rg" id="hkemp-g"></div></div>
+</div>
+
+<!-- 7 -->
+<div class="card"><h2><span class="num">7</span> 移民意向</h2>
+<div class="fg"><label>主要移民目的<span class="hint">(可多选)</span></label><div class="rg-check" id="purpose-g"></div></div>
+<div class="fg"><label>愿意投入的资金预算</label><select id="budget"><option value="">请选择</option><option value="lt50k">低于5万港元</option><option value="50k-200k">5万-20万港元</option><option value="200k-1m">20万-100万港元</option><option value="1m-10m">100万-1,000万港元</option><option value="gte30m">3,000万港元以上</option></select></div>
+</div>
+
+<button type="button" class="btn" id="submit-btn" onclick="evaluate()">📊 提交评估</button>
+</form>
+
+<div class="results-wrap" id="results-wrap"></div>
+</div>
+
+<script>
+// Build radio groups dynamically
+function radios(id, options) {
+  const g = document.getElementById(id+'-g');
+  if (!g) return;
+  const name = id;
+  g.innerHTML = options.map((o,i) => {
+    const val = typeof o === 'string' ? o.toLowerCase().replace(/\s+/g,'-') : o.value;
+    const label = typeof o === 'string' ? o : o.label;
+    return `<label class="ri" data-val="${val}"><input type="radio" name="${name}" value="${val}">${label}</label>`;
+  }).join('');
+  g.querySelectorAll('input').forEach(r => {
+    r.addEventListener('change', function() {
+      const labels = g.querySelectorAll('label.ri');
+      labels.forEach(l => l.classList.remove('sel'));
+      if (this.checked) this.parentElement.classList.add('sel');
+      onRadioChange(id, this.value);
+    });
+  });
+}
+
+function yesno(id) { radios(id, [{label:'是',value:'yes'},{label:'否',value:'no'}]); }
+
+function onRadioChange(id, val) {
+  if (id === 'topuni') document.getElementById('topuni-detail').classList.toggle('show', val==='yes');
+  if (id === 'hkdegree') document.getElementById('hkdegree-detail').classList.toggle('show', val==='yes');
+  if (id === 'exp3y') document.getElementById('exp3y-detail').classList.toggle('show', val==='yes');
+  if (id === 'mnc') document.getElementById('mnc-detail').classList.toggle('show', val==='yes');
+  if (id === 'sector') document.getElementById('sector-detail').classList.toggle('show', val==='yes');
+  if (id === 'otherlang') document.getElementById('otherlang-detail').classList.toggle('show', val==='yes');
+  if (id === 'bizowner') document.getElementById('bizprofit-g').style.display = val==='yes'?'block':'none';
+  if (id === 'education') {
+    const v = document.getElementById('education').value;
+    document.getElementById('stem-g').style.display = (v==='master'||v==='doctor')?'block':'none';
+  }
+}
+
+// Init
+function init() {
+  const ages = ['18-30岁','31-40岁','41-50岁','51岁及以上'];
+  radios('age', ages.map((a,i) => ({label:a, value:['18-30','31-40','41-50','51+'][i]})));
+  yesno('nocrim'); yesno('topuni'); yesno('hkdegree');
+  yesno('exp3y'); yesno('mnc'); yesno('sector'); yesno('otherlang'); yesno('bizowner');
+  radios('hkemp', [{label:'是，已获正式聘用',value:'yes'},{label:'否',value:'no'},{label:'计划自雇/在港创业',value:'plan'}]);
+  radios('stem', [{label:'是',value:'yes'},{label:'否',value:'no'}]);
+  
+  const purposes = [
+    {label:'工作发展',value:'work'},{label:'子女教育',value:'edu'},
+    {label:'资产配置/投资',value:'invest'},{label:'生活方式/居住',value:'life'},
+    {label:'香港护照/永居',value:'passport'}
+  ];
+  const pg = document.getElementById('purpose-g');
+  pg.innerHTML = purposes.map(p => `<label class="ri" data-val="${p.value}"><input type="checkbox" name="purpose" value="${p.value}">${p.label}</label>`).join('');
+  pg.querySelectorAll('input').forEach(cb => cb.addEventListener('change', function(){ this.parentElement.classList.toggle('sel', this.checked); }));
+  
+  document.getElementById('education').addEventListener('change', function(){ onRadioChange('education', this.value); });
+}
+init();
+
+function gv(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el?el.value:null; }
+function gs(id) { return document.getElementById(id).value; }
+function gi(id) { return document.getElementById(id).value.trim(); }
+
+function evaluate() {
+  const age=gv('age'),nat=gs('nationality'),nocrim=gv('nocrim'),edu=gs('education'),topuni=gv('topuni'),stem=gv('stem'),hkdegree=gv('hkdegree'),worky=gs('workyears'),exp3=gv('exp3y'),mnc=gv('mnc'),sector=gv('sector'),income=gs('income'),chinese=gs('chinese'),english=gs('english'),otherlang=gv('otherlang'),networth=gs('networth'),bizowner=gv('bizowner'),bizprofit=gs('bizprofit'),hkemp=gv('hkemp'),budget=gs('budget');
+  
+  if(!age||!nat||!nocrim||!edu||!topuni||!hkdegree||!worky||!exp3||!mnc||!sector||!income||!chinese||!english||!otherlang||!networth||!bizowner||!hkemp){
+    alert('请完成所有必填问题后再提交评估'); return;
+  }
+  
+  const tpsA = income==='gte2.5m';
+  const tpsB = topuni==='yes' && edu!=='associate' && edu!=='highschool' && (worky==='3-5'||worky==='5-9'||worky==='10+');
+  const tpsC = topuni==='yes' && edu!=='associate' && edu!=='highschool' && worky==='0-2';
+  
+  // QMAS 12 criteria
+  let qs=0; const qd=[];
+  if(age!=='51+'){qs++;qd.push(['✅','年龄≤50岁']);}else{qd.push(['❌','年龄>50岁']);}
+  if((edu==='master'||edu==='doctor')&&topuni==='yes'){qs++;qd.push(['✅','合资格大学硕/博']);}else{qd.push(['❌','非合资格大学硕/博或本科']);}
+  if((edu==='master'||edu==='doctor')&&topuni==='yes'&&stem==='yes'){qs++;qd.push(['✅','STEM学科硕博']);}else{qd.push(['❌','非STEM/无硕博']);}
+  if((chinese==='native'||chinese==='good')&&(english==='native'||english==='good')){qs+=2;qd.push(['✅','中英双语良好']);}else if(chinese==='native'||chinese==='good'||english==='native'||english==='good'){qs++;qd.push(['⚠️','仅一种语言良好（中英双语各占1分）']);}else{qd.push(['❌','语言不达标']);}
+  if(exp3==='yes'&&(worky==='5-9'||worky==='10+')){qs++;qd.push(['✅','≥5年学位程度经验']);}else if(exp3==='yes'){qd.push(['⚠️','≥3年但不足5年学位经验']);}else{qd.push(['❌','无≥3年学位经验']);}
+  if(mnc==='yes'){qs++;qd.push(['✅','≥3年跨国公司经验']);}else{qd.push(['❌','无跨国/名企经验']);}
+  if(sector==='yes'){qs++;qd.push(['✅','≥3年特定领域(科创/金融/贸易)']);}else{qd.push(['❌','无特定领域经验']);}
+  if(income==='1m-2.5m'||income==='gte2.5m'){qs++;qd.push(['✅','年收入≥100万HKD']);}else{qd.push(['❌','年收入<100万HKD']);}
+  if(bizowner==='yes'&&bizprofit==='gte5m'){qs++;qd.push(['✅','持有盈利≥500万HKD的业务']);}else{qd.push(['❌','无盈利≥500万的业务']);}
+  if(bizowner==='yes'){qs++;qd.push(['✅','持有业务实体']);}else{qd.push(['❌','无业务实体']);}
+  const qmasOk = qs>=6;
+  
+  const asmtpOk = hkemp==='yes'&&(edu!=='highschool'||(worky==='5-9'||worky==='10+'));
+  const asmtpMaybe = hkemp==='plan'&&(bizowner==='yes'||edu!=='highschool');
+  const iangOk = hkdegree==='yes';
+  let ciesOk=false,ciesBlock='';
+  if(networth==='gte30m'&&(nat==='cn-foreign'||nat==='mo-tw'||nat==='foreign'))ciesOk=true;
+  else if(networth==='gte30m'&&nat==='cn')ciesBlock='中国内地居民须先取得外国永居身份';
+  else ciesBlock='净资产不足3,000万港元';
+  
+  const gepOk = (nat==='foreign'||nat==='mo-tw')&&hkemp==='yes';
+  
+  // Build results
+  const incomeLabel = income==='gte2.5m'?'≥250万':income==='1m-2.5m'?'100-250万':'<100万';
+  const programs = [
+    {name:'高才通 A类（高收入人才）',st:tpsA?'q':'n',d:tpsA?`<span class="txt-green">✅ 符合</span><br>条件：紧接申请前一年，全年收入≥250万港元。<br>签证：首次3年(A类)，续签3+3年。无学历要求、无配额、审批约4周。<br>续签须在港受雇/创业；年收入≥200万HKD可走顶尖人才通道(5年签)。`:`❌ 不符合。需年收入≥250万港元。当前为${incomeLabel}港元。`},
+    {name:'高才通 B类（百强大学+≥3年经验）',st:tpsB?'q':'n',d:tpsB?`<span class="txt-green">✅ 符合</span><br>条件：合资格大学学士学位+5年内≥3年工作经验。<br>签证：首次2年，续签3+3年。无需雇主、审批约4周、无配额。`:`❌ 不符合。需百强大学学士+≥3年经验。${topuni==='no'?'院校不在百强名单。':''}${worky==='0-2'?'工作经验不足3年。':''}`},
+    {name:'高才通 C类（百强大学+<3年经验）',st:tpsC?'q':'n',d:tpsC?`<span class="txt-green">✅ 符合（有年度配额，先到先得）</span><br>条件：合资格大学学士学位+<3年工作经验。<br>签证：首次2年，续签3+3年。`:`❌ 不符合。需百强学士+<3年经验。${topuni==='no'?'院校不在百强名单。':worky!=='0-2'?'工作经验≥3年→应申请B类。':''}`},
+    {name:'优才计划（综合计分制）',st:qmasOk?'q':(qs>=4?'m':'n'),d:qmasOk?`<span class="txt-green">✅ 入围（${qs}/11项）</span><br>12条准则需≥6条。满足：<br>${qd.filter(d=>d[0]==='✅').map(d=>'· '+d[1]).join('<br>')||'无'}<br>签证：首次3年，续签3+2年。无需雇主、审批6-9月。`:(qs>=4?`<span class="txt-orange">⚠️ 不足（${qs}/11项，需≥6）</span><br>不满足的维度：<br>${qd.filter(d=>d[0]!=='✅').map(d=>'· '+d[1]).join('<br>')}<br>建议通过提升学历/语言/收入补足。`: `❌ 条件差距较大（${qs}/11项），建议优先考虑高才通或专才。`)},
+    {name:'专才计划（输入内地人才）',st:asmtpOk?'q':(asmtpMaybe?'m':'n'),d:asmtpOk?`<span class="txt-green">✅ 符合</span><br>条件：已获香港雇主聘用+具备专业技能。<br>签证：首次36个月，续签3+2年。审批1-3月、无配额。`:(asmtpMaybe?`<span class="txt-orange">⚠️ 有条件</span><br>您选择"自雇/创业"。如能提供香港业务计划书并证明经济贡献，可走自雇专才。`:`❌ 暂不符合。需先获香港雇主聘用(或走自雇路径)。`)},
+    {name:'非本地毕业生留港/回港（IANG）',st:iangOk?'q':'n',d:iangOk?`<span class="txt-green">✅ 符合</span><br>条件：港校/大湾区校园全日制学士或以上。<br>签证：应届2年，续签3+3年。无需先找工作、可自由转换。`:`❌ 不符合。需先在香港/港校大湾区校园完成全日制本科以上课程。可先申请港校进修。`},
+    {name:'新资本投资者入境计划（CIES）',st:ciesOk?'q':'n',d:ciesOk?`<span class="txt-green">✅ 符合</span><br>净资产≥3,000万HKD+符合国籍要求。<br>投资：2,700万获许资产+300万CIES组合。首次2年，续签3+3年。`: `❌ 不符合。${ciesBlock||'条件未满足。'}`},
+  ];
+  if(nat!=='cn') programs.push({name:'一般就业政策（非内地居民）',st:gepOk?'q':'m',d:gepOk?`<span class="txt-green">✅ 可申请</span><br>非内地居民工作签证，已获雇主聘用即可。`:`⚠️ 暂未获雇主聘用。`});
+  
+  const order={q:0,m:1,n:2}; programs.sort((a,b)=>order[a.st]-order[b.st]);
+  const qualifying=programs.filter(p=>p.st==='q'), maybe=programs.filter(p=>p.st==='m');
+  
+  let html=`<div class="rs-card rs-summary"><h3>📊 评估结果</h3>`;
+  if(qualifying.length>0){
+    html+=`<p style="font-size:14px;margin-bottom:8px">🎉 符合 <strong>${qualifying.length}</strong> 个项目：</p>`;
+    html+=qualifying.map(p=>`<span class="tag tag-green">${p.name.split('（')[0]}</span>`).join(' ');
+  }
+  if(maybe.length>0){
+    html+=`<p style="font-size:14px;margin:12px 0 8px">⚠️ <strong>${maybe.length}</strong> 个项目有条件可能性：</p>`;
+    html+=maybe.map(p=>`<span class="tag tag-yellow">${p.name.split('（')[0]}</span>`).join(' ');
+  }
+  html+=`</div><div class="rs-card"><h3 style="font-size:16px;margin-bottom:14px;color:#1a3350">📋 逐项分析</h3>`;
+  
+  programs.forEach(p=>{
+    const cls=p.st==='q'?'el':(p.st==='m'?'mb':'no');
+    html+=`<div class="prog ${cls}"><h4>${p.name}</h4><span class="st st-${p.st}">${p.st==='q'?'✅ 符合':(p.st==='m'?'⚠️ 有条件':'❌ 暂不符合')}</span><div class="d">${p.d}</div></div>`;
+  });
+  
+  html+=`<table class="cm"><tr><th>项目</th><th>核心门槛</th><th>审批</th><th>永居</th></tr>`;
+  [['高才通A','年收入≥250万HKD','约4周','7年'],['高才通B/C','百强大学学士','约4周','7年'],['优才','12条≥6条Yes','6-9月','7年'],['专才','香港雇主/自雇','1-3月','7年'],['IANG','港校全日制毕业','约2周','7年'],['CIES','3,000万HKD投资','约6月','7年']].forEach(r=>html+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`);
+  html+=`</table>`;
+  
+  html+=`<div class="hlb">💡 <strong>下一步：</strong>`;
+  if(qualifying.length>0){html+=`首选<strong>${qualifying[0].name}</strong>。${qualifying.length>1?'备选：'+qualifying.slice(1).map(p=>p.name.split('（')[0]).join('、')+''：。':''}`;}
+  else if(maybe.length>0){html+=`最接近<strong>${maybe[0].name}</strong>，补齐条件后可申请。`;}
+  else{html+=`建议从提升学历、增加收入或寻找香港雇主入手。`;}
+  html+=` 所有项目通常居住满7年可申永居。</div>`;
+  html+=`<div class="hlb warn">⚠️ 本评估由AI基于问卷自动生成，仅供参考，不构成法律建议。实际以入境处审批为准。数据来源：immd.gov.hk 2025-2026。</div></div>`;
+  html+=`<button class="btn-sm" onclick="resetForm()">🔄 重新填写</button>`;
+  
+  const w=document.getElementById('results-wrap');
+  w.innerHTML=html; w.classList.add('show');
+  document.getElementById('qform').style.display='none';
+  w.scrollIntoView({behavior:'smooth'});
+}
+
+function resetForm(){
+  document.getElementById('results-wrap').classList.remove('show');
+  document.getElementById('results-wrap').innerHTML='';
+  document.getElementById('qform').style.display='block';
+  document.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(r=>{r.checked=false;r.parentElement.classList.remove('sel');});
+  document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+  document.querySelectorAll('.detail-input').forEach(d=>d.classList.remove('show'));
+  document.getElementById('stem-g').style.display='none';
+  document.getElementById('bizprofit-g').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
