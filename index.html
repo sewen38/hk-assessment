@@ -94,7 +94,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue'
 <div class="fg"><label class="q">愿意投入的资金预算</label><select id="budget"><option value="">请选择</option><option value="lt50k">低于5万港元</option><option value="50k-200k">5万-20万港元</option><option value="200k-1m">20万-100万港元</option><option value="1m-10m">100万-1,000万港元</option><option value="gte30m">3,000万港元以上</option></select></div>
 </div>
 
-<button type="button" class="btn" id="submit-btn" onclick="submitForm()">📤 提交并生成评估数据</button>
+<button type="button" class="btn" id="submit-btn" onclick="submitForm()">📤 提交评估</button>
 </form>
 
 <div id="output-area" style="display:none;margin:0 12px">
@@ -204,8 +204,49 @@ function submitForm(){
   
   document.getElementById('output-text').textContent=out;
   document.getElementById('qform').style.display='none';
-  document.getElementById('output-area').style.display='block';
-  document.getElementById('output-area').scrollIntoView({behavior:'smooth'});
+  var outArea=document.getElementById('output-area');
+  outArea.style.display='block';
+  
+  // Show submitting state
+  outArea.innerHTML='<div class="card" style="text-align:center;border-left:4px solid #2969a8;padding:40px 20px"><h3 style="color:#1a3350">📤 正在提交评估数据...</h3><p style="color:#888;font-size:13px">AI正在接收并分析您的信息</p></div>';
+  outArea.scrollIntoView({behavior:'smooth'});
+  
+  // Build data object
+  var submitData={
+    age:labelLookup('age',age),nationality:labelLookup('nationality',nat),
+    nocrim:yn(nocrim),health:yn(health),
+    education:labelLookup('education',edu),topuni:yn(topuni)+(topuni==='yes'||topuni==='unknown'?' ('+gi('topuni-name')+')':''),
+    stem:(edu==='master'||edu==='doctor')?yn(stem||'未选'):'不适用',
+    hkdegree:yn(hkdegree)+(hkdegree==='yes'?' ('+gi('hkdegree-name')+')':''),
+    workyears:labelLookup('workyears',worky),
+    exp3y:yn(exp3)+(exp3==='yes'?' ('+gi('exp3y-info')+')':''),
+    mnc:yn(mnc)+(mnc==='yes'?' ('+gi('mnc-info')+')':''),
+    sector:yn(sector)+(sector==='yes'?' ('+gi('sector-info')+')':''),
+    income:labelLookup('income',income),
+    chinese:labelLookup('chinese',chinese),english:labelLookup('english',english),
+    otherlang:yn(otherlang)+(otherlang==='yes'?' ('+gi('otherlang-info')+')':''),
+    networth:labelLookup('networth',networth),
+    bizowner:yn(bizowner)+(bizowner==='yes'&&gs('bizprofit')?' | 盈利:'+labelLookup('bizprofit',gs('bizprofit')):''),
+    hkemp:hkempLabel,
+    purposes:purposes.join('、')||'未选',
+    budget:labelLookup('budget',gs('budget'))
+  };
+  
+  // Try to POST data to server
+  fetch('https://5e57602670d4f3ea-113-106-113-62.serveousercontent.com/submit',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(submitData)
+  }).then(function(r){return r.json();}).then(function(r){
+    outArea.innerHTML='<div class="card" style="text-align:center;border-left:4px solid #22c55e;padding:40px 20px"><div style="font-size:40px">✅</div><h3 style="color:#166534;margin:10px 0 6px">已提交成功</h3><p style="color:#555;font-size:14px">AI顾问正在分析，稍后回复评估结果</p><p style="color:#999;font-size:12px;margin-top:10px">提交ID: '+r.id+'</p><button class="btn-sm" onclick="resetForm()" style="margin-top:16px">🔄 重新填写</button></div>';
+  }).catch(function(e){
+    // Fallback: show copy mode
+    var out='══════════════\n 香港移民评估数据\n══════════════\n\n';
+    out+=Object.keys(submitData).map(function(k){return k+': '+submitData[k];}).join('\n');
+    out+='\n══════════════';
+    document.getElementById('output-text').textContent=out;
+    outArea.innerHTML='<div class="card" style="text-align:center;border-left:4px solid #f59e0b;padding:30px 18px"><h3 style="color:#92400e">⚠️ 自动提交暂不可用</h3><p style="font-size:13px;color:#555;margin:8px 0">请复制下方数据手动发送给顾问</p><div class="output-box" id="output-text" style="text-align:left"></div><button class="btn-copy" onclick="copyOutput()">📋 一键复制，发送给顾问</button><button class="btn-sm" onclick="resetForm()" style="margin-top:8px">🔄 重新填写</button></div>';
+    document.getElementById('output-text').textContent=out;
+  });
 }
 
 function copyOutput(){
