@@ -173,23 +173,23 @@ function gs(id) { return document.getElementById(id).value; }
 function gi(id) { return document.getElementById(id).value.trim(); }
 
 function evaluate() {
+  try {
   const age=gs('age'),nat=gs('nationality'),nocrim=gv('nocrim'),health=gv('health'),edu=gs('education'),topuni=gv('topuni'),stem=gv('stem'),hkdegree=gv('hkdegree'),worky=gs('workyears'),exp3=gv('exp3y'),mnc=gv('mnc'),sector=gv('sector'),income=gs('income'),chinese=gs('chinese'),english=gs('english'),otherlang=gv('otherlang'),networth=gs('networth'),bizowner=gv('bizowner'),bizprofit=gs('bizprofit'),hkemp=gv('hkemp'),budget=gs('budget');
   
   if(!age||!nat||!nocrim||!health||!edu||!topuni||!hkdegree||!worky||!exp3||!mnc||!sector||!income||!chinese||!english||!otherlang||!networth||!bizowner||!hkemp){
-    alert('请完成所有必填问题后再提交评估'); return;
+    var missing=[];
+    if(!age)missing.push('年龄');if(!nat)missing.push('国籍');if(!nocrim)missing.push('无犯罪记录');if(!health)missing.push('健康证明');if(!edu)missing.push('学历');if(!topuni)missing.push('百强大学');if(!hkdegree)missing.push('香港学历');if(!worky)missing.push('工作经验');if(!exp3)missing.push('学位经验');if(!mnc)missing.push('跨国经验');if(!sector)missing.push('特定领域');if(!income)missing.push('年收入');if(!chinese)missing.push('中文能力');if(!english)missing.push('英文能力');if(!otherlang)missing.push('其他外语');if(!networth)missing.push('净资产');if(!bizowner)missing.push('业务实体');if(!hkemp)missing.push('雇主情况');
+    alert('请完成以下必填项：\n'+missing.join('、')); return;
   }
   
-  // Show submitting animation
-  const w=document.getElementById('results-wrap');
-  const btn=document.querySelector('.btn');
-  btn.disabled=true; btn.textContent='⏳ 正在提交...';
-  document.getElementById('qform').style.display='none';
-  w.innerHTML=`<div class="rs-card" style="text-align:center;padding:60px 20px"><div style="font-size:48px;margin-bottom:16px">📤</div><h3 style="color:#1a3350;margin-bottom:8px">已提交，AI正在分析...</h3><p style="color:#888;font-size:14px">正在匹配最适合您的香港移民方案</p><div style="margin-top:20px"><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite;margin:0 4px"></span><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite .2s;margin:0 4px"></span><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite .4s;margin:0 4px"></span></div></div>`;
+  var w=document.getElementById('results-wrap');
+  var btn=document.querySelector('.btn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ 分析中...';}
+  w.innerHTML='<div class="rs-card" style="text-align:center;padding:50px 20px"><div style="font-size:40px;margin-bottom:12px">📤</div><h3 style="color:#1a3350;margin-bottom:6px">已提交，AI正在分析...</h3><p style="color:#888;font-size:13px">正在匹配最适合您的香港移民方案</p></div>';
   w.classList.add('show');
   w.scrollIntoView({behavior:'smooth'});
   
-  // Process after delay (like AI thinking)
-  setTimeout(() => {
+  setTimeout(function(){
   if(nocrim==='no'){w.innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">"无犯罪记录"回答为"否"，所有香港入境计划均要求无犯罪记录。建议先解决此问题。</p></div>';return;}
   if(health==='no'){w.innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#c2410c;font-weight:600">"健康证明"回答为"否"，部分入境计划可能要求健康检查。</p><p style="color:#888">以下评估基于其他条件进行：</p></div>';}
   
@@ -252,7 +252,9 @@ function evaluate() {
   
   w.innerHTML=html;
   w.scrollIntoView({behavior:'smooth'});
-  }, 2200); // 2.2秒后显示结果
+  if(btn){btn.disabled=false;btn.textContent='📊 提交评估';}
+  }, 1800);
+  }catch(e){document.getElementById('results-wrap').innerHTML='<div class="rs-card" style="border-left:4px solid #ef4444"><h3>⚠️ 系统错误</h3><p>'+e.message+'</p><p style="font-size:12px;color:#999">请刷新页面重试，或联系技术支持。</p></div>';document.getElementById('results-wrap').classList.add('show');}
 }
 
 function resetForm(){
