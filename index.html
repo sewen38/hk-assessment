@@ -58,6 +58,7 @@ table.cm td:first-child{text-align:left;font-weight:500}
 .hlb{background:#e8f4fd;border:1px solid #b8d8f0;border-radius:8px;padding:12px;margin:10px 0;font-size:13px}
 .hlb.warn{background:#fff7ed;border-color:#fed7aa}
 .btn-sm{display:inline-block;padding:10px 20px;margin:4px;background:#eef1f5;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer}
+@keyframes pulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
 @media(max-width:400px){.radio-row .ropt{min-width:60px;padding:8px 12px;font-size:13px}.card{padding:18px 14px;margin:10px 8px}.header h1{font-size:19px}}
 </style>
 </head>
@@ -177,8 +178,20 @@ function evaluate() {
   if(!age||!nat||!nocrim||!health||!edu||!topuni||!hkdegree||!worky||!exp3||!mnc||!sector||!income||!chinese||!english||!otherlang||!networth||!bizowner||!hkemp){
     alert('请完成所有必填问题后再提交评估'); return;
   }
-  if(nocrim==='no'){document.getElementById('results-wrap').innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">"无犯罪记录"回答为"否"，所有香港入境计划均要求无犯罪记录。建议先解决此问题。</p></div>';document.getElementById('results-wrap').classList.add('show');document.getElementById('qform').style.display='none';return;}
-  if(health==='no'){document.getElementById('results-wrap').innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">"健康证明"回答为"否"，部分入境计划可能要求健康检查。建议提前准备。</p><p>以下评估基于其他条件进行：</p></div>';document.getElementById('qform').style.display='none';}
+  
+  // Show submitting animation
+  const w=document.getElementById('results-wrap');
+  const btn=document.querySelector('.btn');
+  btn.disabled=true; btn.textContent='⏳ 正在提交...';
+  document.getElementById('qform').style.display='none';
+  w.innerHTML=`<div class="rs-card" style="text-align:center;padding:60px 20px"><div style="font-size:48px;margin-bottom:16px">📤</div><h3 style="color:#1a3350;margin-bottom:8px">已提交，AI正在分析...</h3><p style="color:#888;font-size:14px">正在匹配最适合您的香港移民方案</p><div style="margin-top:20px"><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite;margin:0 4px"></span><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite .2s;margin:0 4px"></span><span style="display:inline-block;width:10px;height:10px;background:#2969a8;border-radius:50%;animation:pulse 1.2s infinite .4s;margin:0 4px"></span></div></div>`;
+  w.classList.add('show');
+  w.scrollIntoView({behavior:'smooth'});
+  
+  // Process after delay (like AI thinking)
+  setTimeout(() => {
+  if(nocrim==='no'){w.innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#991b1b;font-weight:600">"无犯罪记录"回答为"否"，所有香港入境计划均要求无犯罪记录。建议先解决此问题。</p></div>';return;}
+  if(health==='no'){w.innerHTML='<div class="rs-card rs-summary"><h3>⚠️ 评估结果</h3><p style="color:#c2410c;font-weight:600">"健康证明"回答为"否"，部分入境计划可能要求健康检查。</p><p style="color:#888">以下评估基于其他条件进行：</p></div>';}
   
   const tpsA=income==='gte2.5m';
   const tpsB=topuni==='yes'&&edu!=='associate'&&edu!=='highschool'&&(worky==='3-5'||worky==='5-9'||worky==='10+');
@@ -237,10 +250,9 @@ function evaluate() {
   html+=`<div class="hlb warn">⚠️ 本评估由AI基于问卷自动生成，仅供参考，不构成法律建议。实际以入境处审批为准。数据来源：immd.gov.hk 2025-2026。</div></div>`;
   html+=`<button class="btn-sm" onclick="resetForm()">🔄 重新填写</button>`;
   
-  const w=document.getElementById('results-wrap');
-  w.innerHTML=html;w.classList.add('show');
-  document.getElementById('qform').style.display='none';
+  w.innerHTML=html;
   w.scrollIntoView({behavior:'smooth'});
+  }, 2200); // 2.2秒后显示结果
 }
 
 function resetForm(){
