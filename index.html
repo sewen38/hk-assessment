@@ -232,16 +232,25 @@ table.cm td:first-child{text-align:left;font-weight:500}
     [['高才通A','年收入≥250万','约4周','7年'],['高才通B/C','百强大学学士','约4周','7年'],['优才','12条≥6条','6-9月','7年'],['专才','雇主/自雇','1-3月','7年'],['IANG','港校毕业','约2周','7年'],['CIES','3,000万投资','约6月','7年']].forEach(function(r){h+='<tr>'+r.map(function(c){return'<td>'+c+'</td>';}).join('')+'</tr>';});
     h+='</table><div class="hb">💡 '+(qp.length>0?'首选<strong>'+qp[0].n+'</strong>。'+(qp.length>1?'备选：'+qp.slice(1).map(function(p){return p.n;}).join('、')+'。':''):mp.length>0?'最接近<strong>'+mp[0].n+'</strong>，补齐条件后可申请。':'建议提升学历/收入/找雇主。')+' 满7年可申永居。</div>';
     h+='<div class="hb w">⚠️ 本评估由AI基于问卷自动生成，仅供参考。实际以入境处审批为准。数据来源：immd.gov.hk</div></div>';
-                h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:12px;color:#8b1e1e">✅ 通过评估的项目（可多选）</h3>';
-    h+='<div class="project-check-grid">';
-    h+='<label class="project-check"><input type="checkbox" name="selProject" value="hk-ncies" onchange="onProjectCheck()"> 新资本投资者入境计划（New CIES）· 投资HK$3,000万</label>';
-    h+='<label class="project-check"><input type="checkbox" name="selProject" value="hk-ttps-a" onchange="onProjectCheck()"> 高才通计划A类（TTPS-A）· 年薪≥HK$250万</label>';
-    h+='<label class="project-check"><input type="checkbox" name="selProject" value="hk-ttps-b" onchange="onProjectCheck()"> 高才通计划B类（TTPS-B）· 百强大学+3年经验</label>';
-    h+='<label class="project-check"><input type="checkbox" name="selProject" value="hk-gqp" onchange="onProjectCheck()"> 优秀人才入境计划（QMAS）· 综合计分制</label>';
-    h+='<label class="project-check"><input type="checkbox" name="selProject" value="hk-asmtp" onchange="onProjectCheck()"> 高端人才通行证计划（ASMTP）· 输入内地人才</label>';
-    h+='</div>';
-	    h+='<div class="flow-actions"><button class="flow-secondary" onclick="goPrevStage()">返回上一阶段</button><button class="flow-secondary" onclick="goBack()">返回修改问卷</button><button class="flow-primary" onclick="goExecPlan()">下一阶段</button></div>';
-    h+='</div>';
+    // Build project options from evaluation statuses
+    var projectOpts=[];
+    projectOpts.push({v:'hk-ncies', s:ciesOk?'q':'n', d:'新资本投资者入境计划（New CIES）· 投资HK$3,000万'});
+    projectOpts.push({v:'hk-ttps-a', s:tpsA?'q':'n', d:'高才通计划A类（TTPS-A）· 年薪≥HK$250万'});
+    projectOpts.push({v:'hk-ttps-b', s:tpsB?'q':'n', d:'高才通计划B类（TTPS-B）· 百强大学+3年经验'});
+    projectOpts.push({v:'hk-gqp', s:qmasOk?'q':(qs>=4?'m':'n'), d:'优秀人才入境计划（QMAS）· 综合计分制'});
+    projectOpts.push({v:'hk-asmtp', s:asmtpOk?'q':(asmtpMaybe?'m':'n'), d:'高端人才通行证计划（ASMTP）· 输入内地人才'});
+    var eligible=projectOpts.filter(function(p){return p.s==='q'||p.s==='m';});
+    if(eligible.length>0){
+      h+='<div class="rs-card"><h3 style="font-size:16px;margin-bottom:12px;color:#8b1e1e">✅ 通过评估的项目（可多选）</h3>';
+      h+='<div class="project-check-grid">';
+      eligible.forEach(function(p){
+        var note=p.s==='m'?' <span style="color:red;font-weight:600">⚠️ 有条件</span>':'';
+        h+='<label class="project-check"><input type="checkbox" name="selProject" value="'+p.v+'" onchange="onProjectCheck()"> '+p.d+note+'</label>';
+      });
+      h+='</div>';
+      h+='<div class="flow-actions"><button class="flow-secondary" onclick="goPrevStage()">返回上一阶段</button><button class="flow-secondary" onclick="goBack()">返回修改问卷</button><button class="flow-primary" onclick="goExecPlan()">下一阶段</button></div>';
+      h+='</div>';
+    }
         h+='<button class="btn-sm" onclick="goBack()" style="margin:8px 0">返回修改</button>';
     D.getElementById('results').innerHTML=h;
   }
